@@ -53,3 +53,43 @@
 ##    /opt/piratebox/init.d - the init-script (later more?)
 ##
 ##   If you use a router, use the piratebox_router init.d script. It has a working start-stop script.
+##
+##    Reference: https://piratebox.cc/laptop
+##
+## Install Required Packages
+sudo apt-get -y install lighttpd
+sudo /etc/init.d/lighttpd stop
+sudo update-rc.d lighttpd disable
+sudo apt-get -y install dnsmasq 
+sudo /etc/init.d/dnsmasq  stop
+sudo update-rc.d dnsmasq disable 
+sudo apt-get -y  install hostapd
+sudo /etc/init.d/hostapd  stop
+sudo update-rc.d hostapd disable 
+sudo apt-get -y install iw
+##
+## Install PirateBox
+wget  http://downloads.piratebox.de/piratebox-ws_current.tar.gz
+tar xzf piratebox-ws_current.tar.gz
+cd piratebox
+sudo mkdir -p  /opt
+sudo cp -rv  piratebox /opt
+cd /opt/piratebox
+##
+##  Customization of your installation
+##  If you don't want to use /opt/piratebox/shared as you default download location,
+sudo rm -rfv /opt/piratebox/share
+sudo ln -s <target-folder> /opt/piratebox/share
+##  If you want to customize your PirateBox, have a look at conf/piratebox.conf
+##  You may even install the imageboard.
+/opt/piratebox/bin/install_piratebox.sh /opt/piratebox/conf/piratebox.conf imageboard
+##  After this point, you may start the PirateBox with:
+/opt/piratebox/init.d/piratebox start
+##  Enable PirateBox for system start
+##  If you want to run it on default startup (Debian):
+sudo ln -s /opt/piratebox/init.d/piratebox /etc/init.d/piratebox  
+sudo update-rc.d piratebox defaults
+##  Depending on your distribution, PirateBox scripts may interfere with the running network-manager. You may need to customize the network-manager configuration or disable the network manager, like wicd
+sudo /etc/init.d/wicd stop
+##  After this you have can enable it with
+sudo /etc/init.d/piratebox start
